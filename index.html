@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Bonkers Skills Arena</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #ff6f61, #6b5b95, #88b04b, #f7cac9);
+            background-size: 400% 400%;
+            animation: gradientAnimation 8s ease infinite;
+        }
+
+        h1 {
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 0 10px #444;
+        }
+
+        button:hover {
+            background-color: #0ff;
+            color: #111;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        .test-section {
+            border: 2px solid #444;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 500px;
+            border-radius: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #444;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: #0ff;
+            transition: width 0.3s;
+        }
+
+        input {
+            border: 2px solid #444;
+            padding: 5px;
+            transition: box-shadow 0.3s;
+        }
+
+        input:focus {
+            box-shadow: 0 0 10px #0ff;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">The Bonkers Skills Arena</h1>
+
+    <!-- Username Section -->
+    <div id="username-section" style="margin-bottom: 20px;">
+        <label for="username">Enter your username:</label>
+        <input type="text" id="username" placeholder="Your username" style="padding: 5px;">
+        <button onclick="saveUsername()" style="padding: 5px;">Save</button>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div id="progress-tracker" style="margin-top: 20px; text-align: center;">
+        <h3>Progress Tracker</h3>
+        <div class="progress-bar">
+            <div class="progress" id="progress" style="width: 0%;"></div>
+        </div>
+        <p id="progress-status">Tests Completed: 0/6</p>
+    </div>
+
+    <!-- Reflex Test -->
+    <div class="test-section" id="reflex-test">
+        <h2>⚡ Reflex Test</h2>
+        <p>Click "Start" and wait for the screen to turn green. Click as fast as you can!</p>
+        <button onclick="startReflex()">Start</button>
+        <div id="reflex-box" style="width:200px;height:100px;margin:20px auto;background:#555;"></div>
+        <p id="reflex-result"></p>
+    </div>
+
+    <!-- Reaction Time Graph -->
+    <div class="test-section" id="reaction-graph">
+        <h2>📊 Reaction Time Graph</h2>
+        <canvas id="reaction-chart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Leaderboard -->
+    <div id="leaderboard" style="margin-top: 20px; text-align: center; color: #0ff;">
+        <h3>Leaderboard (local)</h3>
+    </div>
+
+    <!-- Mind Power Test -->
+    <div class="test-section" id="mind-test">
+        <h2>🧠 Mind Power</h2>
+        <p>Memorize the number:</p>
+        <h2 id="memory-number"></h2>
+        <button onclick="showMemory()">Show</button>
+        <button onclick="askMemory()">What was it?</button>
+        <input type="text" id="memory-input" placeholder="Enter number">
+        <p id="memory-result"></p>
+    </div>
+
+    <!-- Visual Test -->
+    <div class="test-section" id="visual-test">
+        <h2>👁️ Visual Test</h2>
+        <p>How many 3s are in this image?</p>
+        <pre style="font-size: 18px;"></pre>
+        <input type="number" id="visual-answer" placeholder="Your answer">
+        <button onclick="checkVisual()">Check</button>
+        <p id="visual-result"></p>
+    </div>
+
+    <!-- Typing Speed Test -->
+    <div class="test-section" id="typing-test">
+        <h2>⌨️ Typing Speed Test</h2>
+        <p>Type the following sentence as fast as you can:</p>
+        <p id="typing-sentence">The quick brown fox jumps over the lazy dog.</p>
+        <input type="text" id="typing-input" placeholder="Start typing here..." style="width: 80%; padding: 5px;">
+        <button onclick="startTypingTest()">Start</button>
+        <p id="typing-result"></p>
+    </div>
+
+    <!-- Hearing Test -->
+    <div class="test-section" id="hearing-test">
+        <h2>🔊 Hearing Test</h2>
+        <p>Click the tones and see the highest one you can hear!</p>
+        <button onclick="new Audio('sounds/10kHz_All_Ages.wav').play()">10kHz All Ages</button>
+        <button onclick="new Audio('sounds/12kHz_Under_50.wav').play()">12kHz Under 50</button>
+        <button onclick="new Audio('sounds/14kHz_Under_40.wav').play()">14kHz Under 40</button>
+        <button onclick="new Audio('sounds/16kHz_Under_30.wav').play()">16kHz Under 30</button>
+        <button onclick="new Audio('sounds/18kHz_Under_25.wav').play()">18kHz Under 25</button>
+        <button onclick="new Audio('sounds/20kHz_Under_18.wav').play()">20kHz Under 18</button>
+    </div>
+
+    <!-- Music Player -->
+    <div id="music-player" style="margin-top: 20px;">
+        <h3>🎵 Background Music</h3>
+        <button onclick="playMusic()" style="padding: 10px;">Play</button>
+        <button onclick="pauseMusic()" style="padding: 10px;">Pause</button>
+        <div id="volume-control" style="margin-top: 10px;">
+            <label for="volume">Volume:</label>
+            <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5" onchange="setVolume(this.value)">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        // Music Player Logic
+        let music = new Audio('sounds/music.mp3'); // Replace with the path to your music file
+        music.loop = true; // Enable looping for continuous playback
+
+        function playMusic() {
+            music.play();
+        }
+
+        function pauseMusic() {
+            music.pause();
+        }
+
+        function setVolume(volume) {
+            music.volume = volume; // Adjust the volume
+        }
+
+        // All other test logic remains unchanged (Reflex Test, Mind Test, Visual Test, Typing Test, etc.)
+        // Ensure all the existing JavaScript functions are included here.
+        let startTime, timeoutID;
+        let username = "";
+        let leaderboard = [];
+        let reactionTimes = [];
+        let completedTests = 0;
+        let randomNumber = "";
+        let countThrees = 0;
+
+        // Track which tests are completed
+        const completedTestsTracker = {
+            reflex: false,
+            mind: false,
+            visual: false,
+            typing: false,
+        };
+
+        function saveUsername() {
+            const input = document.getElementById("username").value.trim();
+            if (input) {
+                username = input;
+                alert(`Welcome, ${username}!`);
+                document.getElementById("username-section").style.display = "none";
+            } else {
+                alert("Please enter a valid name.");
+            }
+        }
+
+        function markTestComplete(testName) {
+            if (!completedTestsTracker[testName]) {
+                completedTestsTracker[testName] = true;
+                completedTests++;
+                const progressPercent = (completedTests / 4) * 100; // Only 4 tests count
+                document.getElementById("progress").style.width = progressPercent + "%";
+                document.getElementById("progress-status").innerText = `Tests Completed: ${completedTests}/4`;
+            }
+        }
+
+        // Reflex Test Logic
+        function startReflex() {
+            if (!username) {
+                alert("Please enter your username before starting the test.");
+                return;
+            }
+            document.getElementById('reflex-box').style.background = '#555';
+            document.getElementById('reflex-result').innerText = "";
+            timeoutID = setTimeout(() => {
+                startTime = Date.now();
+                document.getElementById('reflex-box').style.background = 'green';
+            }, Math.random() * 2000 + 1000);
+        }
+
+        document.getElementById('reflex-box').addEventListener('click', () => {
+            if (!startTime) return;
+            const reactionTime = Date.now() - startTime;
+            const resultElement = document.getElementById('reflex-result');
+            resultElement.innerText = "Your reaction time: " + reactionTime + " ms";
+
+            if (reactionTime < 100) {
+                resultElement.innerHTML += " 🎉 <strong>Incredible! You're faster than most humans!</strong>";
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
+
+            updateLeaderboard(reactionTime);
+            updateReactionGraph(reactionTime);
+            clearTimeout(timeoutID);
+            startTime = null;
+            markTestComplete("reflex");
+        });
+
+        function updateLeaderboard(reactionTime) {
+            leaderboard.push({ name: username, time: reactionTime });
+            leaderboard.sort((a, b) => a.time - b.time);
+            displayLeaderboard();
+        }
+
+        function displayLeaderboard() {
+            const leaderboardDiv = document.getElementById("leaderboard");
+            leaderboardDiv.innerHTML = "<h3>Leaderboard</h3>";
+            leaderboard.forEach((entry, index) => {
+                const highlight = entry.time < 100 ? 'style="color: #0ff; font-weight: bold;"' : '';
+                leaderboardDiv.innerHTML += `<p ${highlight}>${index + 1}. ${entry.name}: ${entry.time} ms</p>`;
+            });
+        }
+
+        function updateReactionGraph(reactionTime) {
+            reactionTimes.push(reactionTime);
+            const ctx = document.getElementById("reaction-chart").getContext("2d");
+            const chart = Chart.getChart(ctx); // Check if a chart already exists
+            if (chart) {
+                chart.destroy(); // Destroy the existing chart before creating a new one
+            }
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: reactionTimes.map((_, i) => `Attempt ${i + 1}`),
+                    datasets: [{
+                        label: "Reaction Time (ms)",
+                        data: reactionTimes,
+                        backgroundColor: "#0ff",
+                        borderColor: "#0ff",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Mind Power Test Logic
+        function showMemory() {
+            randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
+            const memoryNumberElement = document.getElementById("memory-number");
+            memoryNumberElement.innerText = randomNumber;
+            setTimeout(() => {
+                memoryNumberElement.innerText = "???";
+            }, 2000);
+        }
+
+        function askMemory() {
+            const userInput = document.getElementById("memory-input").value;
+            const result = document.getElementById("memory-result");
+            result.innerText = (userInput === randomNumber) ? "✅ Correct!" : `❌ Nope! It was ${randomNumber}`;
+            markTestComplete("mind");
+        }
+
+        // Visual Test Logic
+        function generateVisualTest() {
+            const lines = 4;
+            const length = 13;
+            let visualBlock = "";
+            countThrees = 0;
+            for (let i = 0; i < lines; i++) {
+                let line = "";
+                for (let j = 0; j < length; j++) {
+                    const digit = Math.floor(Math.random() * 10);
+                    if (digit === 3) countThrees++;
+                    line += digit.toString();
+                }
+                visualBlock += line + "\n";
+            }
+            document.querySelector("#visual-test pre").innerText = visualBlock.trim();
+        }
+
+        function checkVisual() {
+            const userAnswer = parseInt(document.getElementById("visual-answer").value);
+            const result = document.getElementById("visual-result");
+            result.innerText = (userAnswer === countThrees) ? "✅ Correct!" : `❌ Nope! It was ${countThrees}`;
+            markTestComplete("visual");
+        }
+
+        window.onload = generateVisualTest;
+
+        // Typing Speed Test Logic
+        function startTypingTest() {
+            const input = document.getElementById("typing-input");
+            const sentence = document.getElementById("typing-sentence").innerText;
+
+            input.value = "";
+            input.disabled = false;
+            input.focus();
+            document.getElementById("typing-result").innerText = "";
+
+            typingStartTime = Date.now();
+
+            input.removeEventListener("input", checkTyping);
+            input.addEventListener("input", checkTyping);
+        }
+
+        function checkTyping() {
+            const input = document.getElementById("typing-input");
+            const sentence = document.getElementById("typing-sentence").innerText;
+
+            if (input.value === sentence) {
+                const typingEndTime = Date.now();
+                const typingTime = ((typingEndTime - typingStartTime) / 1000).toFixed(2);
+                document.getElementById("typing-result").innerText = `✅ You typed it in ${typingTime} seconds!`;
+                input.disabled = true;
+                markTestComplete("typing");
+            }
+        }
+    </script>
+</body>
+</html>
